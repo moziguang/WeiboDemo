@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.lwq.demo.main.MainActivity">
+
+
+    <RelativeLayout
+            android:id="@+id/menu_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true">
+        <TextView
+                android:id="@+id/menu_add_btn_main"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/h3"
+                android:text="Add"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="12dp"
+                android:gravity="center"/>
+
+        <TextView
+                android:id="@+id/menu_scroll_to_top_btn_main"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/h3"
+                android:text="Scroll"
+                android:layout_toRightOf="@+id/menu_add_btn_main"
+                android:layout_marginLeft="12dp"
+                android:gravity="center"/>
+
+        <TextView
+                android:id="@+id/menu_remove_btn_main"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/h3"
+                android:text="remove"
+                android:layout_toRightOf="@+id/menu_scroll_to_top_btn_main"
+                android:layout_marginLeft="12dp"
+                android:gravity="center"/>
+    </RelativeLayout>
+
+    <!--<ListView
+            android:id="@+id/listview_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/menu_layout_main"/>-->
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/listview_main"
+            android:clipToPadding="false"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_above="@+id/menu_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

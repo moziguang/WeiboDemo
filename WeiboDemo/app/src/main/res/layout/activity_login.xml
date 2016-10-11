@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageView
+            android:id="@+id/weibo_login_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_sina_logo"
+            android:layout_centerInParent="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_tips"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/h3"
+            android:layout_marginTop="12dp"
+            android:layout_below="@id/weibo_login_btn"
+            android:layout_centerHorizontal="true"/>
+</RelativeLayout>

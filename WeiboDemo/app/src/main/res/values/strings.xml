@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WeiboDemo</string>
+    <string name="loading_please_wait">"loading..."</string>
+    <string name="login_tips">点击图标登录微博</string>
+</resources>
