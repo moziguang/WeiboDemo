@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
 
     <application
@@ -15,13 +18,13 @@
             android:name=".base.WeiboApp"
             android:theme="@style/AppTheme">
         <activity android:name=".login.LoginActivity">
-
-        </activity>
-        <activity android:name="com.lwq.demo.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="com.lwq.demo.main.MainActivity">
+
         </activity>
         <activity
                 android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"

@@ -16,6 +16,7 @@ import android.os.Message;
 import android.os.OperationCanceledException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.lwq.base.util.Log;
 import com.lwq.base.util.StatusCodeDef;
@@ -36,10 +37,14 @@ public abstract class BaseDatabase {
     private SQLiteDatabase mReadWriteDB;
     private SQLiteDatabase mReadOnlyDB;
     private ConnectionThread mDbConnection;
-    private Context mContext;
+    private String mDbFilePrefix;
 
     public void init(Context context) {
-        this.mContext = context;
+        connectDB(context);
+    }
+
+    public void init(Context context,String dbFilePrefix) {
+        this.mDbFilePrefix = dbFilePrefix;
         connectDB(context);
     }
 
@@ -396,7 +401,11 @@ public abstract class BaseDatabase {
     private void connectDB(Context context) {
         DatabaseInfo info = new DatabaseInfo();
         info.storagePath = storagePath();
-        info.databaseName = dbFileName();
+        if(TextUtils.isEmpty(mDbFilePrefix)) {
+            info.databaseName = dbFileName();
+        }else{
+            info.databaseName = mDbFilePrefix + dbFileName();
+        }
         info.databaseVersion = databaseVersion();
         info.staticTables = staticTables();
         mDbConnection = new ConnectionThread(context, "DBThread_" + hashCode(), info);

@@ -9,4 +9,7 @@
     <dimen name="h4">12dp</dimen>
     <dimen name="h5">10dp</dimen>
     <dimen name="h6">8dp</dimen>
+
+    <dimen name="weibo_img_height">116dp</dimen>
+    <dimen name="weibo_img_padding">2dp</dimen>
 </resources>

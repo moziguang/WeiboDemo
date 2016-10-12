@@ -15,7 +15,7 @@ import com.lwq.core.db.table.WeiboTable;
 
 public class WeiboDb extends BaseDatabase {
     public static final String DB_NAME = "weibodemo.db";
-    public static final int DB_VERSION = 0;
+    public static final int DB_VERSION = 1;
 
     @Override
     public String storagePath() {

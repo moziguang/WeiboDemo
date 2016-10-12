@@ -1,5 +1,9 @@
 package com.lwq.demo.main;
 
+import java.util.*;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +11,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.lwq.base.event.EventManager;
+import com.lwq.base.event.IEventListener;
+import com.lwq.core.manager.IAccountManager;
+import com.lwq.core.manager.ManagerProxy;
+import com.lwq.core.manager.event.AccountEvent;
+import com.lwq.core.model.WeiboInfo;
 import com.lwq.demo.R;
 
 /*
@@ -28,7 +38,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        refreshWeiboListview();
+        addEvent();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeEvent();
+    }
+
     private void initView(){
         mRecyclerView = (RecyclerView) findViewById(R.id.listview_main);
 //        mRecyclerAdapter = new WeiboAdapter(this);
@@ -54,19 +73,41 @@ public class MainActivity extends AppCompatActivity {
             int id = v.getId();
             switch (id){
                 case R.id.menu_add_btn_main:
-                    mRecyclerAdapter.addItem();
-                    mRecyclerView.smoothScrollBy(0,-getResources().getDimensionPixelSize(R.dimen.list_view_item_height));
-                    mRecyclerView.smoothScrollToPosition(0);
+//                    mRecyclerAdapter.addItem();
+//                    mRecyclerView.smoothScrollBy(0,-getResources().getDimensionPixelSize(R.dimen.list_view_item_height));
+//                    mRecyclerView.smoothScrollToPosition(0);
                     break;
                 case R.id.menu_scroll_to_top_btn_main:
-                    mRecyclerView.smoothScrollToPosition(0);
+//                    mRecyclerView.smoothScrollToPosition(0);
                     break;
                 case R.id.menu_remove_btn_main:
-                    mRecyclerAdapter.removeItem(2);
+//                    mRecyclerAdapter.removeItem(2);
                     break;
                 default:
                     break;
             }
         }
     };
+
+    private void refreshWeiboListview(){
+        List<WeiboInfo> weiboInfoList = ManagerProxy.getManager(IAccountManager.class).getWeiboInfoList();
+        mRecyclerAdapter.setWeiboInfoList(weiboInfoList);
+    }
+
+    private IEventListener mRefreshEventListener = new IEventListener() {
+        @Override
+        public void onEvent(@NonNull String eventType, @Nullable Object params) {
+            refreshWeiboListview();
+        }
+    };
+
+    private void addEvent()
+    {
+        EventManager.defaultAgent().addEventListener(AccountEvent.EVENT_REFRESH_WEIBO_TIMELINE,mRefreshEventListener);
+    }
+
+    private void removeEvent()
+    {
+        EventManager.defaultAgent().removeEventListener(AccountEvent.EVENT_REFRESH_WEIBO_TIMELINE,mRefreshEventListener);
+    }
 }

@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 
+import com.lwq.base.SharedPreferencesManager;
+import com.lwq.base.event.EventManager;
 import com.lwq.base.http.HttpRequestManager;
 import com.lwq.base.util.CacheDirManager;
+import com.lwq.core.db.DatabaseManager;
 import com.lwq.core.manager.ManagerProxy;
 
 /*
@@ -24,7 +27,10 @@ public class WeiboApp extends Application {
         super.onCreate();
         sContext = this;
         sHandler = new Handler();
+        SharedPreferencesManager.getInstance().init(this);
         CacheDirManager.init(this);
+        EventManager.defaultAgent().init();
+        DatabaseManager.init(this);
         HttpRequestManager.getInstance().init(this);
         ManagerProxy.loadManager();
     }

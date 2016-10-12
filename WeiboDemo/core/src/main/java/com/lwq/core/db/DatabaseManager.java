@@ -47,11 +47,11 @@ public class DatabaseManager {
         }
     }
 
-    public static void initPrivateDb(Context context) {
+    public static void initPrivateDb(String dbNamePrefix) {
         synchronized (sInitLock) {
             Log.d(TAG, " sDbAgent =" + sDbAgent);
             if (sDbAgent != null){
-                sDbAgent.initPrivateDb(context);
+                sDbAgent.initPrivateDb(dbNamePrefix);
             }else{
                 Log.e(TAG, " sDbAgent = null ");
             }
@@ -80,6 +80,7 @@ public class DatabaseManager {
 
         private Map<String, BaseDatabase> privateDbMap = new ArrayMap<>();
         private BaseDatabase publicDb;
+        private Context mContext;
 
 
         private DBAgent() {
@@ -108,8 +109,9 @@ public class DatabaseManager {
             return publicDb;
         }
 
-        protected void init(Context context) {
-            initPublicDatabases(context);
+        private void init(Context context) {
+            mContext = context.getApplicationContext();
+            initPublicDatabases(mContext);
         }
 
         private void initPublicDatabases(Context context) {
@@ -120,7 +122,7 @@ public class DatabaseManager {
             }
         }
 
-        protected void uninit() {
+        private void uninit() {
             Log.d(TAG, " DBAgent uninit ");
             synchronized (initPublicLock) {
                 if (publicDb != null) {
@@ -131,13 +133,13 @@ public class DatabaseManager {
             uninitPrivateDb();
         }
 
-        protected void initPrivateDb(Context context) {
-            Log.d(TAG, " DBAgent init");
+        private void initPrivateDb(String dbNamePrefix) {
+//            Log.d(TAG, " DBAgent init mContext = " + mContext);
             synchronized (initPrivateLock) {
-                if(!isPrivateDbInited) {
+                if(!isPrivateDbInited && mContext!=null) {
                     for (BaseDatabase db : privateDBList) {
                         try {
-                            db.init(context);
+                            db.init(mContext,dbNamePrefix);
                             privateDbMap.put(db.databaseName(), db);
                         } catch (Exception e) {
                             Log.e(TAG, "initDatabases Exception", e);
@@ -150,7 +152,7 @@ public class DatabaseManager {
             Log.d(TAG, " DBAgent init end");
         }
 
-        protected void uninitPrivateDb() {
+        private void uninitPrivateDb() {
             synchronized (initPrivateLock) {
                 if (isPrivateDbInited) {
                     for (Map.Entry<String, BaseDatabase> entry : privateDbMap.entrySet()) {

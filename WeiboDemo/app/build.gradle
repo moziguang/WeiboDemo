@@ -12,7 +12,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.lwq.ucdemo"
+        applicationId "com.lwq.demo"
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1

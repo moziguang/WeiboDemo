@@ -19,8 +19,8 @@ public class ManagerProxy {
     public static void loadManager(){
         Log.i(TAG, "loadAppManager");
         AccountManager accountManager = new AccountManager();
-        accountManager.init();
         sManagerMap.put(IAccountManager.class,accountManager);
+        accountManager.init();
     }
 
     public static void unLoadManager() {

@@ -1,11 +1,16 @@
 package com.lwq.demo.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.lwq.base.SharedPreferencesManager;
 import com.lwq.base.util.Log;
+import com.lwq.core.manager.IAccountManager;
+import com.lwq.core.manager.ManagerProxy;
 import com.lwq.demo.R;
 import com.lwq.demo.base.BaseActivity;
 import com.lwq.demo.main.MainActivity;
@@ -32,8 +37,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initSinaAuthSDK();
         setContentView(R.layout.activity_login);
+        checkToken();
+        initSinaAuthSDK();
         View view = findViewById(R.id.weibo_login_btn);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +57,14 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void checkToken(){
+        String uid = ManagerProxy.getManager(IAccountManager.class).getUid();
+        if(!TextUtils.isEmpty(uid)) {
+            gotoMainActivity();
+            finish();
+        }
+    }
+
     private void wbLogin(){
         mWBSsoHandler.authorize(new WeiboAuthListener() {
             @Override
@@ -58,6 +72,13 @@ public class LoginActivity extends BaseActivity {
                 mWBAccessToken = Oauth2AccessToken.parseAccessToken(values);
                 Log.i(TAG, "sina authorize onComplete");
                 UiUtil.showToast("授权成功");
+                SharedPreferences.Editor editor = SharedPreferencesManager.getInstance().getEditor();
+                editor.putString(SharedPreferencesManager.KEY_SINA_UID, mWBAccessToken.getUid());
+                editor.putString(SharedPreferencesManager.KEY_SINA_ACCESS_TOKEN, mWBAccessToken.getToken());
+                editor.putString(SharedPreferencesManager.KEY_SINA_REFRESH_TOKEN, mWBAccessToken.getRefreshToken());
+                editor.putLong(SharedPreferencesManager.KEY_SINA_EXPIRES_IN, mWBAccessToken.getExpiresTime());
+                editor.apply();
+                ManagerProxy.getManager(IAccountManager.class).initUser(mWBAccessToken.getUid());
                 gotoMainActivity();
             }
 

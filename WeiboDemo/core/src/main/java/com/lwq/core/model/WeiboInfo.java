@@ -8,7 +8,9 @@ package com.lwq.core.model;
 
 import android.content.ContentValues;
 
+import com.lwq.base.util.JsonUtils;
 import com.lwq.core.db.table.WeiboTable;
+import org.json.JSONObject;
 
 public class WeiboInfo {
     private long mId;
@@ -31,6 +33,7 @@ public class WeiboInfo {
     private String mPicIds;
     private String mAd;
     private String mCreatedAt;
+    private UserInfo mUserInfo;
 
     public long getId() {
         return mId;
@@ -192,6 +195,13 @@ public class WeiboInfo {
         this.mCreatedAt = createdAt;
     }
 
+    public UserInfo getUserInfo() {
+        if(mUserInfo==null && mUser!=null){
+            mUserInfo = UserInfo.parseFromJson(JsonUtils.load(mUser));
+        }
+        return mUserInfo;
+    }
+
     @Override
     public String toString() {
         return "WeiboInfo{" +
@@ -241,5 +251,29 @@ public class WeiboInfo {
         c.put(WeiboTable.COL_AD, mAd);
         c.put(WeiboTable.COL_CREATE_AT, mCreatedAt);
         return c;
+    }
+
+    public static WeiboInfo parseFromJson(JSONObject jsonObject){
+        WeiboInfo weiboInfo = new WeiboInfo();
+        weiboInfo.setId(JsonUtils.getLong(jsonObject,"id",0L));
+        weiboInfo.setMid(JsonUtils.getLong(jsonObject,"mid",0L));
+        weiboInfo.setIdstr(JsonUtils.getString(jsonObject,"idstr"));
+        weiboInfo.setText(JsonUtils.getString(jsonObject,"text"));
+        weiboInfo.setSource(JsonUtils.getString(jsonObject,"source"));
+        weiboInfo.setFavorited(JsonUtils.getBoolean(jsonObject,"favorited",false) ? 1:0);
+        weiboInfo.setTruncated(JsonUtils.getBoolean(jsonObject,"truncated",false) ? 1:0);
+        weiboInfo.setThumbnailPic(JsonUtils.getString(jsonObject,"thumbnail_pic"));
+        weiboInfo.setBmiddlePic(JsonUtils.getString(jsonObject,"bmiddle_pic"));
+        weiboInfo.setOriginalPic(JsonUtils.getString(jsonObject,"original_pic"));
+        weiboInfo.setGeo(JsonUtils.getString(jsonObject,"geo"));
+        weiboInfo.setUser(JsonUtils.getString(jsonObject,"user"));
+        weiboInfo.setRetweetedStatus(JsonUtils.getString(jsonObject,"retweeted_status"));
+        weiboInfo.setRepostsCount(JsonUtils.getInt(jsonObject,"reposts_count",0));
+        weiboInfo.setCommentsCount(JsonUtils.getInt(jsonObject,"comments_count",0));
+        weiboInfo.setAttitudesCount(JsonUtils.getInt(jsonObject,"attitudes_count",0));
+        weiboInfo.setVisible(JsonUtils.getString(jsonObject,"visible"));
+        weiboInfo.setPicIds(JsonUtils.getString(jsonObject,"pic_ids"));
+        weiboInfo.setAd(JsonUtils.getString(jsonObject,"ad"));
+        return weiboInfo;
     }
 }

@@ -43,14 +43,14 @@ public class HttpRequestManager {
     private static final int BUFFER_SIZE = 10 * 1024;
     private static final int SO_TIMEOUT = 8 * 1000;
     private static final int CON_TIMEOUT = 8 * 1000;
-    public static final String KEY_SET_COOKIE = "Set-Cookie";
-    public static final String KEY_COOKIE = "Cookie";
+    private static final String KEY_SET_COOKIE = "Set-Cookie";
+    private static final String KEY_COOKIE = "Cookie";
     /**
      * onProgress回调的触发频率
      */
-    public static final int PROGRESS_RATE = 1000;
+    private static final int PROGRESS_RATE = 1000;
 
-    private static HttpRequestManager sInstance = null;
+    private static final HttpRequestManager sInstance = new HttpRequestManager();
 
     /**
      * 3个常驻线程，最多3个线程
@@ -64,10 +64,7 @@ public class HttpRequestManager {
     private Context mContext;
     private CookieManager mWebkitCookieManager;
 
-    public synchronized static HttpRequestManager getInstance() {
-        if (sInstance == null) {
-            sInstance = new HttpRequestManager();
-        }
+    public static HttpRequestManager getInstance() {
         return sInstance;
     }
 

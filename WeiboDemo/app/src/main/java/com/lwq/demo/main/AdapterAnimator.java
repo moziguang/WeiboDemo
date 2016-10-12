@@ -9,6 +9,7 @@ package com.lwq.demo.main;
 import java.lang.ref.WeakReference;
 
 import android.animation.ValueAnimator;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 
 public class AdapterAnimator {
@@ -25,7 +26,15 @@ public class AdapterAnimator {
         mAnimator.addUpdateListener(mlistener);
     }
 
-    private void cancelExistingAnim(){
+    public void cancelExistingAnim(){
+        if(mViewRef!=null)
+        {
+            View view = mViewRef.get();
+            if(view!=null){
+                ViewCompat.setTranslationX(view,0);
+                ViewCompat.setAlpha(view,1);
+            }
+        }
         mViewRef = null;
         mAnimator.cancel();
         mAnimator.setFloatValues(0f,1f);
