@@ -13,11 +13,14 @@ import android.widget.ListView;
 
 import com.lwq.base.event.EventManager;
 import com.lwq.base.event.IEventListener;
+import com.lwq.base.util.Log;
 import com.lwq.core.manager.IAccountManager;
+import com.lwq.core.manager.IImageManager;
 import com.lwq.core.manager.ManagerProxy;
 import com.lwq.core.manager.event.AccountEvent;
 import com.lwq.core.model.WeiboInfo;
 import com.lwq.demo.R;
+import com.lwq.demo.base.BaseActivity;
 
 /*
  * Description : Demo to show the weibo data
@@ -25,12 +28,13 @@ import com.lwq.demo.R;
  * Creation    : 2016-10-10
  * Author      : moziguang@126.com
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private RecyclerView mRecyclerView;
     private WeiboRecyclerAdapter mRecyclerAdapter;
     private ListView mListView;
     private WeiboAdapter mAdapter;
+    private int mMinScrollDy;
 //    private View mAddBtn;
 
     @Override
@@ -49,15 +53,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView(){
+        mMinScrollDy = getResources().getDimensionPixelOffset(R.dimen.weibo_min_scroll_dy);
         mRecyclerView = (RecyclerView) findViewById(R.id.listview_main);
 //        mRecyclerAdapter = new WeiboAdapter(this);
-        mRecyclerAdapter = new WeiboRecyclerAdapter(this);
+        mRecyclerAdapter = new WeiboRecyclerAdapter(this,mRecyclerView);
         mLinearLayoutManager = new SmoothScrollLinearLayoutManager(this);
 //        mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setItemAnimator(new MyItemAnimator());
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+//        WeiboItemDecoration itemDecoration = new WeiboItemDecoration(this);
+//        mRecyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
+                if (scrollState != RecyclerView.SCROLL_STATE_IDLE) {
+                    ManagerProxy.getManager(IImageManager.class).pause();
+                } else {
+                    ManagerProxy.getManager(IImageManager.class).resume();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>mMinScrollDy){
+                    mRecyclerAdapter.setEnableAnim(false);
+                }else{
+                    mRecyclerAdapter.setEnableAnim(true);
+                }
+            }
+        });
 //        mLinearLayoutManager.setStackFromEnd(true);
         View addBtn = findViewById(R.id.menu_add_btn_main);
         addBtn.setOnClickListener(mOnClickListener);

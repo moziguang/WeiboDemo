@@ -8,7 +8,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.lwq.base.util.Log;
-import com.lwq.demo.base.WeiboApp;
+import com.lwq.core.WeiboApp;
 import com.lwq.demo.base.LoadingDialog;
 
 

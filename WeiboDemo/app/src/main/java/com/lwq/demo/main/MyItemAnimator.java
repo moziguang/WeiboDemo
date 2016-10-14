@@ -30,7 +30,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
 
     @Override
     public boolean animateRemove(RecyclerView.ViewHolder holder) {
-        Log.d(TAG,"animateRemove item = " + holder);
+//        Log.d(TAG,"animateRemove item = " + holder);
         resetAnimation(holder);
         mPendingRemovals.add(holder);
         return true;
@@ -38,7 +38,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
 
     @Override
     public boolean animateAdd(RecyclerView.ViewHolder holder) {
-        Log.d(TAG,"animateAdd item = " + holder);
+//        Log.d(TAG,"animateAdd item = " + holder);
         dispatchAddStarting(holder);
         dispatchAddFinished(holder);
         return false;
@@ -47,7 +47,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
     @Override
     public boolean animateMove(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX,
                                int toY) {
-        Log.d(TAG,"animateMove item = " + holder);
+//        Log.d(TAG,"animateMove item = " + holder);
         final View view = holder.itemView;
         fromX += ViewCompat.getTranslationX(holder.itemView);
         fromY += ViewCompat.getTranslationY(holder.itemView);
@@ -72,7 +72,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
     public boolean animateChange(RecyclerView.ViewHolder oldHolder,
                                  RecyclerView.ViewHolder newHolder, int fromLeft, int fromTop,
                                  int toLeft, int toTop) {
-        Log.d(TAG,"animateChange item = " + oldHolder);
+//        Log.d(TAG,"animateChange item = " + oldHolder);
         dispatchChangeStarting(oldHolder, true);
         dispatchChangeFinished(oldHolder, true);
         return false;
@@ -80,7 +80,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
 
     @Override
     public void runPendingAnimations() {
-        Log.d(TAG,"runPendingAnimations");
+//        Log.d(TAG,"runPendingAnimations");
         boolean removalsPending = !mPendingRemovals.isEmpty();
         boolean movesPending = !mPendingMoves.isEmpty();
         if (!removalsPending && !movesPending /*&& !additionsPending && !changesPending*/) {
@@ -121,7 +121,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
 
     @Override
     public void endAnimation(RecyclerView.ViewHolder item) {
-        Log.d(TAG,"endAnimation item = " + item);
+//        Log.d(TAG,"endAnimation item = " + item);
         final View view = item.itemView;
         // this will trigger end callback which should set properties to their target values.
         ViewCompat.animate(view).cancel();
@@ -223,7 +223,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
      */
     void dispatchFinishedWhenDone() {
         if (!isRunning()) {
-            Log.d(TAG,"dispatchAnimationsFinished");
+//            Log.d(TAG,"dispatchAnimationsFinished");
             dispatchAnimationsFinished();
         }
     }
@@ -254,7 +254,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
 
             @Override
             public void onAnimationEnd(View view) {
-                Log.d(TAG,"onAnimationEnd item = " + holder);
+//                Log.d(TAG,"onAnimationEnd item = " + holder);
                 animation.setUpdateListener(null);
                 animation.setListener(null);
                 ViewCompat.setAlpha(view, 1);

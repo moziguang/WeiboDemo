@@ -4,6 +4,7 @@ import java.util.*;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.lwq.base.SharedPreferencesManager;
@@ -33,7 +34,7 @@ import org.json.JSONObject;
  * Author      : moziguang@126.com
  */
 public class AccountManager extends BaseManager implements IAccountManager {
-    private static final int PAGE_SIZE = 30;
+    private static final int PAGE_SIZE = 100;
     private long mLocalMaxId = 0;
     private int mPageIndex = 0;
     private long mLocalSinceId = 0;
@@ -52,7 +53,8 @@ public class AccountManager extends BaseManager implements IAccountManager {
             mToken = SharedPreferencesManager.getInstance().getStringByKey(SharedPreferencesManager.KEY_SINA_ACCESS_TOKEN, null);
             mExpiresTime = SharedPreferencesManager.getInstance().getLongByKey(SharedPreferencesManager.KEY_SINA_EXPIRES_IN, 0);
             mRefreshToken = SharedPreferencesManager.getInstance().getStringByKey(SharedPreferencesManager.KEY_SINA_REFRESH_TOKEN, null);
-            Log.d(TAG,"init token = " + mToken + " expiresTime = " + mExpiresTime + " refreshToken = " + mRefreshToken + " uid = " + mUid);
+            Date date = new Date(mExpiresTime);
+            Log.d(TAG,"init token = " + mToken + " expiresTime = " + mExpiresTime + " refreshToken = " + mRefreshToken + " uid = " + mUid + " date = " + date);
             initUser(mUid);
         }
     }
@@ -71,7 +73,7 @@ public class AccountManager extends BaseManager implements IAccountManager {
     public void onDbOpen() {
         Log.d(TAG, "onDbOpen");
         String sql = "select max(id) from " + WeiboTable.TABLE_NAME;
-        BaseDatabase db = DatabaseManager.dbAgent().getDatabase();
+        final BaseDatabase db = DatabaseManager.dbAgent().getDatabase();
         Cursor cursor = null;
         try {
             cursor = db.rawQuery(sql, null);
@@ -86,7 +88,53 @@ public class AccountManager extends BaseManager implements IAccountManager {
                 cursor.close();
             }
         }
-        refreshWeiboTimeline();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                List<WeiboInfo> weiboInfoList = new ArrayList<WeiboInfo>();
+                Cursor cursor = null;
+                try {
+                    cursor = db.query(WeiboTable.TABLE_NAME,null,null,null,null,null,WeiboTable.COL_ID + " DESC ");
+                    if (cursor != null && cursor.moveToFirst()) {
+                        do{
+                            WeiboInfo weiboInfo = new WeiboInfo();
+                            weiboInfo.setCreatedAt(cursor.getString(WeiboTable.INDEX_CREATE_AT));
+                            weiboInfo.setId(cursor.getLong(WeiboTable.INDEX_ID));
+                            weiboInfo.setAd(cursor.getString(WeiboTable.INDEX_AD));
+                            weiboInfo.setPicUrlStr(cursor.getString(WeiboTable.INDEX_PIC_IDS));
+                            weiboInfo.setVisible(cursor.getString(WeiboTable.INDEX_VISIBLE));
+                            weiboInfo.setAttitudesCount(cursor.getInt(WeiboTable.INDEX_ATTITUDES_COUNT));
+                            weiboInfo.setBmiddlePic(cursor.getString(WeiboTable.INDEX_BMIDDLE_PIC));
+                            weiboInfo.setCommentsCount(cursor.getInt(WeiboTable.INDEX_COMMENTS_COUNT));
+                            weiboInfo.setFavorited(cursor.getInt(WeiboTable.INDEX_FAVORITED));
+                            weiboInfo.setGeo(cursor.getString(WeiboTable.INDEX_GEO));
+                            weiboInfo.setIdstr(cursor.getString(WeiboTable.INDEX_IDSTR));
+                            weiboInfo.setMid(cursor.getLong(WeiboTable.INDEX_MID));
+                            weiboInfo.setOriginalPic(cursor.getString(WeiboTable.INDEX_ORIGINAL_PIC));
+                            weiboInfo.setVisible(cursor.getString(WeiboTable.INDEX_VISIBLE));
+                            weiboInfo.setUser(cursor.getString(WeiboTable.INDEX_USER));
+                            weiboInfo.setTruncated(cursor.getInt(WeiboTable.INDEX_TRUNCATED));
+                            weiboInfo.setThumbnailPic(cursor.getString(WeiboTable.INDEX_THUMBNAIL_PIC));
+                            weiboInfo.setText(cursor.getString(WeiboTable.INDEX_TEXT));
+                            weiboInfo.setSource(cursor.getString(WeiboTable.INDEX_SOURCE));
+                            weiboInfo.setRetweetedStatus(cursor.getString(WeiboTable.INDEX_RETWEETED_STATUS));
+                            weiboInfo.setRepostsCount(cursor.getInt(WeiboTable.INDEX_REPOSTS_COUNT));
+                            weiboInfoList.add(weiboInfo);
+                        }while (cursor.moveToNext());
+                    }
+                }catch (Exception e){
+                    Log.e(TAG, "query mLocalMaxId error",e);
+                }finally {
+                    if(cursor!=null){
+                        cursor.close();
+                    }
+                }
+                setWeiboInfoList(weiboInfoList);
+                refreshWeiboTimeline();
+                return null;
+            }
+        }.execute();
     }
 
     @Override
@@ -129,7 +177,7 @@ public class AccountManager extends BaseManager implements IAccountManager {
                         }catch (Exception e){
                             Log.e(TAG,"refreshWeiboTimeline Exception",e);
                         }
-                        setWeiboInfoList(weiboInfoList);
+                        addWeiboInfoList(weiboInfoList);
                         BaseDatabase db = DatabaseManager.dbAgent().getDatabase();
                         db.executeTask(new BaseDatabase.DatabaseTask() {
                             @Override
@@ -163,6 +211,16 @@ public class AccountManager extends BaseManager implements IAccountManager {
     @Override
     public String getUid() {
         return mUid;
+    }
+
+    private void addWeiboInfoList(List<WeiboInfo> weiboInfoList)
+    {
+        synchronized (mWeiboInfoListLock){
+            if(weiboInfoList!=null) {
+                mWeiboInfoList.addAll(weiboInfoList);
+            }
+        }
+        EventManager.defaultAgent().distribute(AccountEvent.EVENT_REFRESH_WEIBO_TIMELINE);
     }
 
     private void setWeiboInfoList(List<WeiboInfo> weiboInfoList)

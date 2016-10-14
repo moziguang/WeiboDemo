@@ -53,7 +53,7 @@ public class WeiboTable implements ITable {
     public static final int INDEX_ATTITUDES_COUNT = 16;
     public static final int INDEX_VISIBLE = 17;
     public static final int INDEX_PIC_IDS = 18;
-    public static final int INDEX_PIC_AD = 19;
+    public static final int INDEX_AD = 19;
 
     @Override
     public String getTableName() {

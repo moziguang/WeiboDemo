@@ -11,7 +11,8 @@
             android:id="@+id/menu_layout_main"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
         <TextView
                 android:id="@+id/menu_add_btn_main"
                 android:layout_width="80dp"
@@ -53,8 +54,6 @@
             android:layout_above="@id/menu_layout_main"/>-->
     <android.support.v7.widget.RecyclerView
             android:id="@+id/listview_main"
-            android:clipToPadding="false"
-            android:scrollbarStyle="outsideOverlay"
             android:layout_above="@+id/menu_layout_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

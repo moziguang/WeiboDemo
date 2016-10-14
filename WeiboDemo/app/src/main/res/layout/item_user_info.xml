@@ -5,8 +5,8 @@
 
     <ImageView
             android:id="@+id/user_header_img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/weibo_user_header_height"
+            android:layout_height="@dimen/weibo_user_header_height"
             android:src="@color/c4"
             android:layout_alignParentLeft="true" />
 
@@ -16,7 +16,7 @@
             android:layout_height="18dp"
             android:textSize="@dimen/h3"
             android:textColor="@color/c5"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="6dp"
             android:layout_toRightOf="@id/user_header_img"
             android:includeFontPadding="false"/>
@@ -27,7 +27,7 @@
             android:layout_height="10dp"
             android:textSize="@dimen/h5"
             android:textColor="@color/c6"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="2dp"
             android:layout_marginLeft="6dp"
             android:layout_toRightOf="@id/user_header_img"
             android:layout_below="@id/user_name_tv"

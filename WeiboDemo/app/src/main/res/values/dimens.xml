@@ -1,7 +1,4 @@
 <resources>
-    <!--listview 分隔线的高度-->
-    <dimen name="list_view_divider">1px</dimen>
-    <dimen name="list_view_item_height">80dp</dimen>
     <!-- Coco字体方案-->
     <dimen name="h1">18dp</dimen>
     <dimen name="h2">16dp</dimen>
@@ -10,6 +7,12 @@
     <dimen name="h5">10dp</dimen>
     <dimen name="h6">8dp</dimen>
 
-    <dimen name="weibo_img_height">116dp</dimen>
-    <dimen name="weibo_img_padding">2dp</dimen>
+    <dimen name="weibo_item_padding">12dp</dimen>
+    <dimen name="weibo_item_divider_height">10dp</dimen>
+
+    <dimen name="weibo_img_height_bmiddle">170dp</dimen>
+    <dimen name="weibo_img_height_thumbnail">110dp</dimen>
+    <dimen name="weibo_img_padding">3dp</dimen>
+    <dimen name="weibo_user_header_height">40dp</dimen>
+    <dimen name="weibo_min_scroll_dy">60dp</dimen>
 </resources>

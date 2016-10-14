@@ -24,10 +24,12 @@ public class CacheDirManager {
     public static String sBasePath;              //Base 路径
     public static String sLogPath;            // Log路径
     public static String sCrashLogPath;         // Crash 路径
+    public static String sImagePath;         // image cache 路径
 
-    final public static String SD_CACHE_BASE_PATH_NAME = "ucdemo";
-    final public static String CACHE_LOGGER_BASE_PATH_NAME = "Logger";
-    final public static String CACHE_CRASH_LOGGER_BASE_PATH_NAME = "CrashLogger";
+    public static final String SD_CACHE_BASE_PATH_NAME = "ucdemo";
+    public static final String CACHE_LOGGER_BASE_PATH_NAME = "Logger";
+    public static final String CACHE_CRASH_LOGGER_BASE_PATH_NAME = "CrashLogger";
+    public static final String IMAGE_CACHE_PATH_NAME = "image";
 
 
     public static void init(Context context) {
@@ -52,9 +54,17 @@ public class CacheDirManager {
             crashLoggerFile.mkdir();
         }
         Log.i(TAG, "crash log path:" + sCrashLogPath);
+
+        //image cache 缓存
+        sImagePath = sBasePath + IMAGE_CACHE_PATH_NAME + File.separator;
+        File imageCacheFile = new File(sCrashLogPath);
+        if (!imageCacheFile.exists()) {
+            imageCacheFile.mkdir();
+        }
+        Log.i(TAG, "image cache path:" + sImagePath);
     }
 
-    public static String getExternalCacheDirBasePath(Context context) {
+    private static String getExternalCacheDirBasePath(Context context) {
 
         File file = context.getExternalCacheDir();
         if (file != null) {

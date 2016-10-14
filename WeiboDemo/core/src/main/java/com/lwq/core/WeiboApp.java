@@ -1,4 +1,4 @@
-package com.lwq.demo.base;
+package com.lwq.core;
 
 import android.app.Application;
 import android.content.Context;

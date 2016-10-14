@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/imageloader" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

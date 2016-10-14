@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.lwq.base.util.Log;
 import com.lwq.core.manager.impl.AccountManager;
+import com.lwq.core.manager.impl.ImageManager;
 
 
 /*
@@ -18,6 +19,10 @@ public class ManagerProxy {
 
     public static void loadManager(){
         Log.i(TAG, "loadAppManager");
+        ImageManager imageManager = new ImageManager();
+        sManagerMap.put(IImageManager.class,imageManager);
+        imageManager.init();
+
         AccountManager accountManager = new AccountManager();
         sManagerMap.put(IAccountManager.class,accountManager);
         accountManager.init();

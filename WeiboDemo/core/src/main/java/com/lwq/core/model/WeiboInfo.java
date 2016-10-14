@@ -6,13 +6,18 @@ package com.lwq.core.model;
  * Author      : moziguang@126.com
  */
 
+import java.util.*;
+
 import android.content.ContentValues;
 
 import com.lwq.base.util.JsonUtils;
+import com.lwq.base.util.Log;
 import com.lwq.core.db.table.WeiboTable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WeiboInfo {
+    private static final String TAG = "WeiboInfo";
     private long mId;
     private long mMid;
     private String mIdstr;
@@ -30,7 +35,8 @@ public class WeiboInfo {
     private long mCommentsCount;
     private long mAttitudesCount;
     private String mVisible;
-    private String mPicIds;
+    private String mPicUrlStr;
+    private List<String> mPicUrlList = new ArrayList<>();
     private String mAd;
     private String mCreatedAt;
     private UserInfo mUserInfo;
@@ -171,12 +177,37 @@ public class WeiboInfo {
         this.mVisible = visible;
     }
 
-    public String getPicIds() {
-        return mPicIds;
+    public String getPicUrlStr() {
+        return mPicUrlStr;
     }
 
-    public void setPicIds(String picIds) {
-        this.mPicIds = picIds;
+    public void setPicUrlStr(String picUrlStr) {
+        this.mPicUrlStr = picUrlStr;
+        JSONArray picUrls = JsonUtils.loadJsonArray(picUrlStr);
+        if(picUrls!=null) {
+            for (int i = 0; i < picUrls.length(); i++) {
+                try {
+                    JSONObject picJson = picUrls.getJSONObject(i);
+                    mPicUrlList.add(JsonUtils.getString(picJson, "thumbnail_pic"));
+                } catch (Exception e) {
+                    Log.e(TAG, "setPicUrls Exception", e);
+                }
+            }
+        }
+    }
+
+    public void setPicUrls(JSONArray picUrls) {
+        if(picUrls!=null) {
+            this.mPicUrlStr = picUrls.toString();
+            for(int i=0;i<picUrls.length();i++) {
+                try {
+                    JSONObject picJson = picUrls.getJSONObject(i);
+                    mPicUrlList.add(JsonUtils.getString(picJson,"thumbnail_pic"));
+                }catch (Exception e){
+                    Log.e(TAG,"setPicUrls Exception",e);
+                }
+            }
+        }
     }
 
     public String getAd() {
@@ -202,6 +233,10 @@ public class WeiboInfo {
         return mUserInfo;
     }
 
+    public List<String> getPicUrlList() {
+        return mPicUrlList;
+    }
+
     @Override
     public String toString() {
         return "WeiboInfo{" +
@@ -222,7 +257,7 @@ public class WeiboInfo {
                  ", mCommentsCount=" + mCommentsCount +
                  ", mAttitudesCount=" + mAttitudesCount +
                  ", mVisible='" + mVisible + '\'' +
-                 ", mPicIds='" + mPicIds + '\'' +
+                 ", mPicUrlStr='" + mPicUrlStr + '\'' +
                  ", mAd='" + mAd + '\'' +
                  ", mCreatedAt='" + mCreatedAt + '\'' +
                  '}';
@@ -247,7 +282,7 @@ public class WeiboInfo {
         c.put(WeiboTable.COL_COMMENTS_COUNT, mCommentsCount);
         c.put(WeiboTable.COL_ATTITUDES_COUNT, mAttitudesCount);
         c.put(WeiboTable.COL_VISIBLE, mVisible);
-        c.put(WeiboTable.COL_PIC_IDS, mPicIds);
+        c.put(WeiboTable.COL_PIC_IDS, mPicUrlStr);
         c.put(WeiboTable.COL_AD, mAd);
         c.put(WeiboTable.COL_CREATE_AT, mCreatedAt);
         return c;
@@ -272,8 +307,10 @@ public class WeiboInfo {
         weiboInfo.setCommentsCount(JsonUtils.getInt(jsonObject,"comments_count",0));
         weiboInfo.setAttitudesCount(JsonUtils.getInt(jsonObject,"attitudes_count",0));
         weiboInfo.setVisible(JsonUtils.getString(jsonObject,"visible"));
-        weiboInfo.setPicIds(JsonUtils.getString(jsonObject,"pic_ids"));
+        JSONArray picIdArray = JsonUtils.getJSONArray(jsonObject,"pic_urls");
+        weiboInfo.setPicUrls(picIdArray);
         weiboInfo.setAd(JsonUtils.getString(jsonObject,"ad"));
+        weiboInfo.setCreatedAt(JsonUtils.getString(jsonObject,"created_at"));
         return weiboInfo;
     }
 }
